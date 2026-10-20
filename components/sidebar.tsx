@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Activity, ArrowLeftRight, CircleHelp, CreditCard, LayoutDashboard, LogOut, Settings2, Target, Wallet } from "lucide-react";
+import { Activity, ArrowLeftRight, CircleHelp, CreditCard, LayoutDashboard, LogOut, Settings2, Target } from "lucide-react";
 import { signOut } from "@/app/actions";
 
 const links = [

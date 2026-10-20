@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { TransactionForm } from "@/components/transaction-form";
 import { createClient } from "@/lib/supabase/server";

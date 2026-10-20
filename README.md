@@ -126,3 +126,16 @@ Supabase Free is suitable for an early prototype but does not include automatic 
 - Add rate limiting, error monitoring, export/delete flows, terms, privacy policy, and a support contact.
 - Do not store bank passwords, PINs, CVVs, or full card numbers.
 - Avoid claiming the app is bank-connected or provides financial advice.
+
+## New account and appearance options
+
+- Sign in with either an email/password or a one-time email link.
+- Create an account from the password sign-in tab, request a password reset, and change your password from Settings.
+- Supabase SSR cookies plus the middleware session refresh keep an authenticated session available across visits until sign-out or expiry.
+- Choose from eight palettes in **Settings → Appearance**: Midnight Lime, Ocean Blue, Aurora Violet, Rose Quartz, Amber Glow, Forest, Paper Light, and Monochrome. The theme preference is stored locally in the current browser/device and does not change account data.
+
+### Supabase Auth URLs for production
+
+In Supabase Dashboard → Authentication → URL Configuration, set **Site URL** to the deployed production origin, for example `https://spendsense-git-main-malay9.vercel.app`, and add the deployed origin plus `/auth/callback` as an allowed redirect URL. Keep `http://localhost:3000/auth/callback` for local development. Password-reset links also return through `/auth/callback` and continue to `/auth/reset-password`.
+
+Use the actual production URL shown by Vercel if it differs from the example above. Never commit `.env.local` or a Supabase service-role key.

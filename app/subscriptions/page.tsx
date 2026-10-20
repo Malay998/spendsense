@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
-import { CreditCard, Plus, ArrowRight } from "lucide-react";
+import { CreditCard, ArrowRight } from "lucide-react";
 
 export default function SubscriptionsPage() {
   return <AppShell active="/subscriptions"><div className="topbar"><div><div className="eyebrow">RECURRING SPEND</div><h1 className="page-title">Subscriptions</h1><p className="muted" style={{fontSize:13,marginTop:9}}>Know what renews, when it renews, and what it costs.</p></div></div>

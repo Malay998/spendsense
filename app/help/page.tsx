@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { ShieldCheck, Database, Download, Mail } from "lucide-react";
 

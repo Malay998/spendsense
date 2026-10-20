@@ -4,11 +4,14 @@ import { createClient } from "@/lib/supabase/server";
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/dashboard";
+  const requestedNext = searchParams.get("next") ?? "/dashboard";
+  // Only allow app-local paths; reject protocol-relative redirects such as //example.com.
+  const next = requestedNext.startsWith("/") && !requestedNext.startsWith("//") ? requestedNext : "/dashboard";
+
   if (code) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) return NextResponse.redirect(new URL(next.startsWith("/") ? next : "/dashboard", origin));
+    if (!error) return NextResponse.redirect(new URL(next, origin));
   }
   return NextResponse.redirect(new URL("/login?error=auth", origin));
 }
