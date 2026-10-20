@@ -1,0 +1,37 @@
+SPENDSENSE — ENABLE GOOGLE SIGN-IN
+
+Google sign-in is implemented in the app, but it will not work until Google OAuth is configured in Supabase. This setup is required once per Supabase project.
+
+A. CREATE GOOGLE OAUTH CREDENTIALS
+1. Open https://console.cloud.google.com/ and select or create a Google Cloud project.
+2. Open APIs & Services -> OAuth consent screen and complete the required app details. For testing, add the Google accounts that should be allowed to sign in as test users. Before a public launch, finish the required consent-screen verification steps for your app.
+3. Open APIs & Services -> Credentials -> Create Credentials -> OAuth client ID.
+4. Choose Web application.
+5. In Authorized redirect URIs, add the exact Supabase callback URL shown in Supabase Dashboard -> Authentication -> Providers -> Google. It usually looks like:
+   https://YOUR-PROJECT-REF.supabase.co/auth/v1/callback
+   Use the exact URL shown in your own dashboard; do not use the SpendSense /auth/callback URL here.
+6. Create the OAuth client and copy its Client ID and Client Secret.
+
+B. ENABLE GOOGLE IN SUPABASE
+1. Open Supabase Dashboard -> Authentication -> Providers -> Google.
+2. Enable Google and paste the Google Client ID and Client Secret.
+3. Save the provider settings.
+4. Open Authentication -> URL Configuration.
+5. Set Site URL to the deployed SpendSense origin, for example https://your-app.vercel.app.
+6. Add these Redirect URLs (replace with your real Vercel hostname):
+   https://your-app.vercel.app/auth/callback
+   http://localhost:3000/auth/callback
+7. Save.
+
+C. TEST
+1. Open the deployed app and choose Continue with Google.
+2. Choose the Google account and approve the requested sign-in.
+3. Confirm the app returns to /dashboard.
+4. Add a small test transaction, sign out, and sign in again with the same Google account. The record should still be there.
+
+IMPORTANT EMAIL RATE-LIMIT NOTES
+- Google OAuth does not require SpendSense to send a sign-in magic-link email, so it avoids that specific email-send bottleneck for routine sign-in.
+- Email/password sign-up may still send a confirmation email if email confirmation is enabled in Supabase. Password reset and magic-link flows still depend on email delivery and may be rate-limited.
+- For a public app, configure a reputable custom SMTP provider in Supabase Authentication -> SMTP Settings and review its sending limits. Do not repeatedly retry email sends while rate-limited.
+- Do not disable security checks or email confirmation solely to hide the limit without understanding the account-takeover risk.
+- Never put Google Client Secret, Supabase service-role key, or other server secrets into NEXT_PUBLIC_ variables, the browser, or GitHub.

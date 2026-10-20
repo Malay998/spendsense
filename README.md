@@ -4,14 +4,14 @@ A dark, minimalist student-focused money manager built with Next.js, TypeScript,
 
 ## What is included
 
-- Landing page and email magic-link login UI.
+- Landing page with Google OAuth as the primary sign-in path, plus email/password and optional email magic-link sign-in.
 - Auth callback and server-side session handling.
 - Protected app shell.
 - Transactions: create, list and delete records.
 - Dashboard metrics calculated from records actually entered.
 - Category breakdown and basic cash-flow insights.
 - Profile settings and monthly income target.
-- Database schema for budgets and subscriptions (UI for budgets is currently a read-only breakdown; subscription CRUD is a roadmap item).
+- Persistent transaction records, editable monthly category budgets, and subscription tracking with billing cycles and renewal dates.
 - Restricted admin page for account list and tracked activity events.
 - RLS policies for user-owned rows.
 - Mobile-responsive dark UI.
@@ -34,8 +34,9 @@ This is a starter, not a finished financial product. You must configure Supabase
 2. Open **SQL Editor**.
 3. Copy/paste `supabase/schema.sql` and run it.
 4. In **Authentication -> URL Configuration**, add your local URL `http://localhost:3000/auth/callback` and later your production callback URL `https://YOUR-APP.vercel.app/auth/callback`.
-5. Configure email delivery. The built-in email sender is rate-limited for testing; configure a custom SMTP provider for a public app.
-6. Copy the Project URL and publishable/anon key from Project API settings.
+5. Configure Google OAuth by following `GOOGLE-SIGN-IN-SETUP.txt`. Google sign-in avoids sending a magic-link email for routine login.
+6. Email links, password resets, and email/password sign-up confirmations can still be rate-limited by the email provider. For a public app, configure a custom SMTP provider in Supabase Authentication settings.
+7. Copy the Project URL and publishable/anon key from Project API settings.
 
 ## 2. Configure locally on Windows
 
@@ -127,15 +128,30 @@ Supabase Free is suitable for an early prototype but does not include automatic 
 - Do not store bank passwords, PINs, CVVs, or full card numbers.
 - Avoid claiming the app is bank-connected or provides financial advice.
 
-## New account and appearance options
+## Sign-in and appearance options
 
-- Sign in with either an email/password or a one-time email link.
+- Continue with Google (requires one-time setup in `GOOGLE-SIGN-IN-SETUP.txt`). Google OAuth can create a user on their first sign-in and avoids routine magic-link email delivery.
+- Sign in with email/password or an optional one-time email link.
 - Create an account from the password sign-in tab, request a password reset, and change your password from Settings.
 - Supabase SSR cookies plus the middleware session refresh keep an authenticated session available across visits until sign-out or expiry.
-- Choose from eight palettes in **Settings → Appearance**: Midnight Lime, Ocean Blue, Aurora Violet, Rose Quartz, Amber Glow, Forest, Paper Light, and Monochrome. The theme preference is stored locally in the current browser/device and does not change account data.
+- Choose from eight palettes in **Settings → Appearance**: Midnight Lime, Ocean Blue, Aurora Violet, Rose Quartz, Amber Glow, Forest, Paper Light, and Monochrome. The theme preference is stored locally in the current browser/device and does not change account data. Transaction, budget, and subscription records are stored in Supabase and are scoped to the signed-in user by Row Level Security.
 
 ### Supabase Auth URLs for production
 
 In Supabase Dashboard → Authentication → URL Configuration, set **Site URL** to the deployed production origin, for example `https://spendsense-git-main-malay9.vercel.app`, and add the deployed origin plus `/auth/callback` as an allowed redirect URL. Keep `http://localhost:3000/auth/callback` for local development. Password-reset links also return through `/auth/callback` and continue to `/auth/reset-password`.
 
 Use the actual production URL shown by Vercel if it differs from the example above. Never commit `.env.local` or a Supabase service-role key.
+
+
+### Email rate limits and Google sign-in
+
+SpendSense cannot remove Supabase's or an SMTP provider's rate limits from application code. Use Google OAuth for the simplest routine sign-in, configure Google in Supabase using `GOOGLE-SIGN-IN-SETUP.txt`, and configure a custom SMTP provider if you expect many email confirmations or password resets. Do not disable authentication safeguards just to suppress a rate-limit message.
+
+### Persistent records included
+
+- Transactions: saved in Supabase, shown in the transaction list, and used by dashboard totals.
+- Monthly budgets: saved per category and month, compared against recorded expense transactions. Saving the same category/month updates that limit.
+- Subscriptions: saved with amount, billing cycle, category, and optional renewal date; the page estimates a monthly equivalent for active subscriptions.
+- Profiles: display name, currency, and monthly income.
+
+The database has no arbitrary app-level count limit in these pages, but practical capacity depends on your Supabase plan and database resources. Export and back up important data before inviting real users.

@@ -3,11 +3,14 @@ SPENDSENSE UPGRADE — THEMES + ACCOUNT SIGN-IN
 WHAT'S NEW
 - Eight visual themes: Midnight Lime, Ocean Blue, Aurora Violet, Rose Quartz, Amber Glow, Forest, Paper Light, and Monochrome.
 - Theme choice applies immediately and is saved in the current browser/device.
-- Sign in with either password or an email magic link.
-- Create an account with email/password, request a password reset, and set/change a password from Settings.
+- Continue with Google as the primary sign-in path, with email/password and optional email magic link as fallbacks. Google OAuth requires one-time configuration described in GOOGLE-SIGN-IN-SETUP.txt.
+- Create an account with email/password, request a password reset, and set/change a password from Settings. Email flows may still be rate-limited by Supabase/provider settings; routine Google sign-in does not send a magic-link email.
 - Supabase SSR cookies and middleware refresh the session on visits so users can return to their account until they sign out or the session expires.
 - Better responsive layout and a sign-out control that remains available on mobile.
 - Safe local-path validation on the auth callback redirect.
+- Monthly category budgets can be created/updated and compared with recorded expenses.
+- Subscription records can be added/deleted, with billing cycles and optional renewal dates.
+- Friendly error messages explain common login and email-rate-limit problems.
 - Fixes for JSX apostrophes and unused imports seen in earlier build logs.
 
 HOW TO APPLY THIS ZIP TO AN EXISTING WINDOWS PROJECT
@@ -31,3 +34,10 @@ SECURITY NOTES
 
 VALIDATION NOTE
 TypeScript/TSX syntax was checked for this package. A full npm build could not be run in the packaging environment because the npm registry was unreachable. Run npm.cmd run build locally before pushing.
+
+
+GOOGLE SIGN-IN SETUP
+Follow GOOGLE-SIGN-IN-SETUP.txt. It explains the Google Cloud OAuth client, Supabase provider configuration, and allowed callback URLs. The code alone cannot enable OAuth without these provider credentials.
+
+PERSISTENT DATA
+Run supabase/schema.sql in your Supabase project's SQL Editor if you have not already. Transactions, profiles, budgets, and subscriptions are saved in Supabase with per-user row-level security. The theme preference remains local to the browser.
