@@ -18,11 +18,15 @@ export async function addTransaction(formData: FormData) {
   const category = String(formData.get("category") || "Other");
   const type = String(formData.get("type") || "expense");
   const date = String(formData.get("date") || new Date().toISOString().slice(0,10));
+  const note = String(formData.get("note") || "").trim().slice(0,500);
+  const ratingRaw = String(formData.get("rating") || "");
+  const rating = ratingRaw ? Number(ratingRaw) : null;
   if (!title || !Number.isFinite(amount) || amount <= 0 || !["income","expense"].includes(type)) {
     throw new Error("Enter a description and a positive amount.");
   }
+  if (rating !== null && (!Number.isInteger(rating) || rating < 1 || rating > 5)) throw new Error("Choose a rating from 1 to 5.");
   const { error } = await supabase.from("transactions").insert({
-    user_id: user.id, title, amount, category, type, transaction_date: date, currency: "INR"
+    user_id: user.id, title, amount, category, type, transaction_date: date, currency: "INR", note: note || null, rating
   });
   if (error) throw new Error(error.message);
   await supabase.from("activity_events").insert({ user_id: user.id, event_type: "transaction_created", metadata: { type, category } });

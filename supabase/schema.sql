@@ -21,6 +21,8 @@ create table if not exists public.transactions (
   category text not null default 'Other',
   type text not null check (type in ('income','expense')),
   transaction_date date not null default current_date,
+  note text check (char_length(note) <= 500),
+  rating smallint check (rating between 1 and 5),
   created_at timestamptz not null default now()
 );
 create index if not exists transactions_user_date_idx on public.transactions(user_id, transaction_date desc);
@@ -104,3 +106,8 @@ create policy "events own insert" on public.activity_events for insert to authen
 
 -- No client-facing admin policy exists. The server-only admin key is used after
 -- checking auth user app_metadata.role === 'admin'. Never expose that key in the browser.
+
+
+-- Upgrade existing installs safely with optional transaction context fields.
+alter table public.transactions add column if not exists note text check (char_length(note) <= 500);
+alter table public.transactions add column if not exists rating smallint check (rating between 1 and 5);

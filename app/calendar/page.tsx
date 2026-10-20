@@ -1,0 +1,6 @@
+import { redirect } from "next/navigation";
+import { CalendarDays } from "lucide-react";
+import { AppShell } from "@/components/app-shell";
+import { MoneyCalendar } from "@/components/money-calendar";
+import { createClient } from "@/lib/supabase/server";
+export default async function CalendarPage(){const supabase=await createClient();const {data:{user}}=await supabase.auth.getUser();if(!user)redirect("/login");const {data}=await supabase.from("transactions").select("id,title,amount,type,category,transaction_date").eq("user_id",user.id).order("transaction_date",{ascending:false}).limit(5000);return <AppShell active="/calendar"><div className="topbar"><div><div className="eyebrow">YOUR FINANCIAL TIMELINE</div><h1 className="page-title">Money calendar<span style={{color:"var(--accent)"}}>.</span></h1><p className="muted" style={{fontSize:13,marginTop:9}}>Explore any month and revisit the days behind your spending.</p></div><span className="metric-icon" style={{width:46,height:46}}><CalendarDays size={20}/></span></div><div className="calendar-layout"><MoneyCalendar transactions={(data??[]).map(t=>({...t,amount:Number(t.amount)}))}/></div><p className="small muted" style={{marginTop:16}}>Calendar activity is based on your saved transactions. Empty days simply mean no transaction has been recorded.</p></AppShell>}

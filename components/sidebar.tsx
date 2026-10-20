@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Activity, ArrowLeftRight, CircleHelp, CreditCard, LayoutDashboard, LogOut, Settings2, Target } from "lucide-react";
+import { Activity, ArrowLeftRight, CalendarDays, CircleHelp, CreditCard, FileBarChart, LayoutDashboard, LogOut, Settings2, Target, TrendingUp } from "lucide-react";
 import { signOut } from "@/app/actions";
 
 const links = [
@@ -7,7 +7,10 @@ const links = [
   { href: "/transactions", label: "Transactions", icon: ArrowLeftRight },
   { href: "/budgets", label: "Budgets", icon: Target },
   { href: "/subscriptions", label: "Subscriptions", icon: CreditCard },
-  { href: "/insights", label: "Insights", icon: Activity }
+  { href: "/insights", label: "Insights", icon: Activity },
+  { href: "/calendar", label: "Calendar", icon: CalendarDays },
+  { href: "/investments", label: "Investment lab", icon: TrendingUp },
+  { href: "/reports", label: "Reports & exports", icon: FileBarChart }
 ];
 
 export function Sidebar({ active, email }: { active: string; email: string }) {

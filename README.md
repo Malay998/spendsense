@@ -155,3 +155,26 @@ SpendSense cannot remove Supabase's or an SMTP provider's rate limits from appli
 - Profiles: display name, currency, and monthly income.
 
 The database has no arbitrary app-level count limit in these pages, but practical capacity depends on your Supabase plan and database resources. Export and back up important data before inviting real users.
+
+
+## SpendSense 2.0 additions
+
+- **Reports & exports** (`/reports`): period filters for today, last 7 days, this month, this year, all time, and custom date ranges; a printable report that can be saved as PDF; CSV transaction export; income/expense/net/savings-rate summary; category breakdown; recurring subscription summary; transaction notes and ratings.
+- **Money calendar** (`/calendar`): month-by-month history with daily income, expenses and transaction detail.
+- **Investment lab** (`/investments`): configurable SIP and fixed-deposit illustrations.
+- Expanded responsive styling for phone, tablet, laptop, desktop and wide screens; reduced-motion support retained.
+- Transactions now support optional private notes and 1–5 purchase ratings.
+
+### Required database migration before using notes/ratings
+
+On the existing Supabase project, open **SQL Editor** and run `supabase/SPENDSENSE_2_UPGRADE.sql`. It adds two nullable columns only and does not delete or rewrite existing transactions. The reports page and new transaction form expect these columns. Keep your existing Supabase project and auth configuration.
+
+### Setup and deployment
+
+1. Extract this ZIP and run `npm install` (or `npm ci`).
+2. Copy `.env.example` to `.env.local` and fill in your own Supabase URL and public anon key. Never commit `.env.local`.
+3. Run the migration above in Supabase before using notes/ratings.
+4. Run `npm run dev` for local development; run `npm run build` to verify a production build in an environment with dependencies available.
+5. Deploy the updated project to your existing hosting provider after confirming the environment variables are set.
+
+**Data safety:** The included ZIP intentionally excludes `.env.local`, `.git`, `.next`, and `node_modules`. Existing Supabase data is not included in the ZIP and is not modified by the source package. PDF uses the browser print dialog; select “Save as PDF.” The theme picker persists its choice in that browser, not yet per account across devices.
